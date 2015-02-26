@@ -79,6 +79,13 @@ public class FormActivity extends ActionBarActivity {
             return;
         }
 
+        try{
+            data[4] = convDate(data[4]);
+        }catch(Exception e){
+            showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_date));
+            return;
+        }
+
         Intent intent = new Intent(this,ResultActivity.class);
         intent.putExtra(FORM_DATA, data);
         startActivity(intent);

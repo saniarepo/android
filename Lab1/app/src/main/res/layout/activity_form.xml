@@ -143,6 +143,7 @@
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
+            android:hint="@string/ph_date"
             android:id="@+id/editDate"
             android:layout_weight="1" />
 
