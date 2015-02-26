@@ -59,13 +59,25 @@ public class FormActivity extends ActionBarActivity {
 
     public void checkData(View v){
         String[] data =  getFormData();
-        StringBuffer sb = new StringBuffer();
-        for ( int i =0; i < data.length; i++ ){
-            sb.append(data[i]);
-            sb.append(":");
+        if (!checkValid(data[0],namePattern)){
+            showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_name));
+            return;
         }
-        sb.append(":"+ getCurrDateTime());
-        showMessage(getApplicationContext(), sb.toString());
+
+        if (!checkValid(data[1],namePattern)){
+            showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_lastname));
+            return;
+        }
+
+        if (!checkValid(data[2],emailPattern)){
+            showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_email));
+            return;
+        }
+
+        if (!checkValid(data[4],datePattern)){
+            showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_date));
+            return;
+        }
 
         Intent intent = new Intent(this,ResultActivity.class);
         intent.putExtra(FORM_DATA, data);

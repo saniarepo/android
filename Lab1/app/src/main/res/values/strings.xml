@@ -19,5 +19,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="registered_male">Зарегистрирован:</string>
     <string name="registered_female">Зарегистрирована:</string>
+    <string name="not_valid_name">Некорректное имя</string>
+    <string name="not_valid_lastname">Некорректная фамилия</string>
+    <string name="not_valid_email">Некорректный email</string>
+    <string name="not_valid_date">Некорректная дата</string>
 
 </resources>
