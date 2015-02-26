@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Анкета</string>
+    <string name="action_settings">Настройки</string>
+    <string name="fill_form">Пожалуйста, заполните  анкету:</string>
+    <string name="name">Имя:</string>
+    <string name="ph_name">Ваше имя</string>
+    <string name="lastname">Фамилия:</string>
+    <string name="ph_lastname">Ваша фамилия</string>
+    <string name="email">Email:</string>
+    <string name="ph_email">Ваш email</string>
+    <string name="sex">Пол:</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
+    <string name="birthday">Дата рождения:</string>
+    <string name="ready">Готово</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="registered_male">Зарегистрирован:</string>
+    <string name="registered_female">Зарегистрирована:</string>
+
+</resources>
