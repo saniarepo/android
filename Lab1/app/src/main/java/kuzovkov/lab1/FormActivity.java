@@ -10,19 +10,66 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import java.io.FileInputStream;
+
+import static kuzovkov.lab1.FileStorage.*;
 import static kuzovkov.lab1.Helper.*;
 
 
 public class FormActivity extends ActionBarActivity {
 
     public final static String FORM_DATA = "kuzovkov.lab1.form_data";
+    public String[] savedData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
+        savedData = loadData();
+        if (savedData != null){
+            fillBySavedData(savedData);
+        }
+
     }
 
+    /*чтение из файла сохраненных данных*/
+    public String[] loadData(){
+        /*чтение из файла*/
+        try{
+            byte[] buf = new byte[4096];
+            FileInputStream fis = openFileInput(FILENAME);
+            fis.read(buf);
+            String s = new String(buf);
+            return s.split(SEPARATOR);
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    /*заполнение полей формы прочитанными данными*/
+    public void fillBySavedData(String[] data){
+        ((EditText)findViewById(R.id.editName)).setText(data[0]);
+        ((EditText)findViewById(R.id.editLastname)).setText(data[1]);
+        ((EditText)findViewById(R.id.editEmail)).setText(data[2]);
+        if (data[3].equals("male")){
+            ((RadioButton)findViewById(R.id.male)).setChecked(true);
+            ((RadioButton)findViewById(R.id.female)).setChecked(false);
+        }else{
+            ((RadioButton)findViewById(R.id.male)).setChecked(false);
+            ((RadioButton)findViewById(R.id.female)).setChecked(true);
+        }
+        ((EditText)findViewById(R.id.editDate)).setText(data[4]);
+    }
+
+    /*очистка формы*/
+    public void clearForm(){
+        ((EditText)findViewById(R.id.editName)).setText("");
+        ((EditText)findViewById(R.id.editLastname)).setText("");
+        ((EditText)findViewById(R.id.editEmail)).setText("");
+        ((RadioButton)findViewById(R.id.male)).setChecked(true);
+        ((RadioButton)findViewById(R.id.female)).setChecked(false);
+        ((EditText)findViewById(R.id.editDate)).setText("");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,6 +93,7 @@ public class FormActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*получени данных с формы*/
     private String[] getFormData(){
         String[] data = new String[6];
         data[0] = ((EditText)findViewById(R.id.editName)).getText().toString();
@@ -53,32 +101,34 @@ public class FormActivity extends ActionBarActivity {
         data[2] = ((EditText)findViewById(R.id.editEmail)).getText().toString();
         data[3] = (((RadioButton)findViewById(R.id.male)).isChecked())? "male" : "female";
         data[4] = ((EditText)findViewById(R.id.editDate)).getText().toString();
-        data[5] = getCurrDateTime();
+        data[5] = ( savedData == null )? getCurrDateTime() : savedData[5];
         return data;
     }
 
+    /*обработчик кнопки ГОТОВО, проверяет данные и передает другой активности*/
     public void checkData(View v){
         String[] data =  getFormData();
+        /*проверка имени*/
         if (!checkValid(data[0],namePattern)){
             showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_name));
             return;
         }
-
+        /*проверка фамилии*/
         if (!checkValid(data[1],namePattern)){
             showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_lastname));
             return;
         }
-
+        /*проверка email*/
         if (!checkValid(data[2],emailPattern)){
             showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_email));
             return;
         }
-
+        /*проверка даты*/
         if (!checkValid(data[4],datePattern)){
             showMessage(getApplicationContext(), getResources().getString(R.string.not_valid_date));
             return;
         }
-
+        /*еще проверка даты*/
         try{
             data[4] = convDate(data[4]);
         }catch(Exception e){

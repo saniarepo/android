@@ -14,7 +14,7 @@
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
     <string name="birthday">Дата рождения:</string>
-    <string name="ph_date">dd.mm.yyyy</string>
+    <string name="ph_date">dd(./)mm(./)yyyy</string>
     <string name="ready">Готово</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -24,6 +24,9 @@
     <string name="not_valid_lastname">Некорректная фамилия</string>
     <string name="not_valid_email">Некорректный email</string>
     <string name="not_valid_date">Некорректная дата</string>
-
-
+    <string name="clear">Очистить</string>
+    <string name="save">Сохранить</string>
+    <string name="nothing_save">Нет сохраненных данных</string>
+    <string name="clear_ok">Данные удалены</string>
+    <string name="save_ok">Данные сохранены</string>
 </resources>
