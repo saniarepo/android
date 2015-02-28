@@ -29,4 +29,9 @@
     <string name="nothing_save">Нет сохраненных данных</string>
     <string name="clear_ok">Данные удалены</string>
     <string name="save_ok">Данные сохранены</string>
+    <string name="make_photo">Сделать снимок</string>
+    <string name="cancel_photo">Фото - Отмена</string>
+    <string name="fail_photo">Фото - ошибка</string>
+    <string name="cancel_video">Видео - Отмена</string>
+    <string name="fail_video">Видео - ошибка</string>
 </resources>

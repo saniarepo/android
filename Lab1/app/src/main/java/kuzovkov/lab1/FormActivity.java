@@ -2,15 +2,23 @@ package kuzovkov.lab1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
+import  java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static kuzovkov.lab1.FileStorage.*;
 import static kuzovkov.lab1.Helper.*;
@@ -20,6 +28,39 @@ public class FormActivity extends ActionBarActivity {
 
     public final static String FORM_DATA = "kuzovkov.lab1.form_data";
     public String[] savedData = null;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    private Uri fileUri;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
+    /*создание file Uri для записи аудио или видео*/
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /*создание файла для записи аудио или видео*/
+    private static File getOutputMediaFile(int type){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                Log.d("Анкета", "failed to create directory");
+                return null;
+            }
+        }
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
+        }else if(type == MEDIA_TYPE_VIDEO){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".mp4");
+        }else{
+            return null;
+        }
+
+        return mediaFile;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +144,38 @@ public class FormActivity extends ActionBarActivity {
         data[4] = ((EditText)findViewById(R.id.editDate)).getText().toString();
         data[5] = ( savedData == null )? getCurrDateTime() : savedData[5];
         return data;
+    }
+
+    /*обработчик кнопки СДЕЛАТЬ СНИМОК*/
+    public void makePhoto(View v){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imagedata){
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
+            if (resultCode == RESULT_OK){
+                Log.d("Lab1","resultCode==RESULT_OK");
+                showMessage(getApplicationContext(), "Image saved");
+            }else if (resultCode == RESULT_CANCELED){
+                showMessage(getApplicationContext(), getResources().getString(R.string.cancel_photo));
+            }else{
+                showMessage(getApplicationContext(), getResources().getString(R.string.fail_photo));
+            }
+        }
+
+        if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE){
+            if (resultCode == RESULT_OK){
+                showMessage(getApplicationContext(), "Video saved");
+            }else if (resultCode == RESULT_CANCELED){
+                showMessage(getApplicationContext(), getResources().getString(R.string.cancel_video));
+            }else{
+                showMessage(getApplicationContext(), getResources().getString(R.string.fail_video));
+            }
+        }
     }
 
     /*обработчик кнопки ГОТОВО, проверяет данные и передает другой активности*/

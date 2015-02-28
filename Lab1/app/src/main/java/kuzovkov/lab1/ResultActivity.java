@@ -3,6 +3,8 @@ package kuzovkov.lab1;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,7 +36,14 @@ public class ResultActivity extends ActionBarActivity {
         ((TextView)findViewById(R.id.nameLastname)).setText(data[0]+" "+data[1]);
         ((TextView)findViewById(R.id.res_date_value)).setText(data[4]);
         ((TextView)findViewById(R.id.res_email_value)).setText(data[2]);
-        if (data[3].equals("male")){
+        ((TextView)findViewById(R.id.registered_value)).setText(data[5]);
+        this.data = data;
+        showPhoto();
+    }
+
+    /*показ фото если есть или аватарки */
+    private void showPhoto(){
+        if (this.data[3].equals("male")){
             ((ImageView)findViewById(R.id.avatar)).setImageResource(R.drawable.male);
             ((TextView)findViewById(R.id.registered)).setText(R.string.registered_male);
         }else{
@@ -41,9 +51,23 @@ public class ResultActivity extends ActionBarActivity {
             ((TextView)findViewById(R.id.registered)).setText(R.string.registered_female);
         }
 
-        ((TextView)findViewById(R.id.registered_value)).setText(data[5]);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
+        Uri uri = Uri.fromFile(mediaFile);
+        if (mediaFile.exists()){
+            ((ImageView)findViewById(R.id.avatar)).setImageURI(uri);
+        }
+    }
 
-        this.data = data;
+    /*удаление фото если есть*/
+    private  boolean deletePhoto(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
+        if (mediaFile.exists()){
+            mediaFile.delete();
+            return true;
+        }
+        return false;
     }
 
     /*обработчик кнопки СОХРАНИТЬ, запись данных в файл*/
@@ -61,10 +85,13 @@ public class ResultActivity extends ActionBarActivity {
 
     /*обработчик кнопки ОЧИСТИТЬ, удаление файла с данными*/
     public void clearData(View v){
-        if (!deleteFile(FILENAME)){
+        boolean delFile = deleteFile(FILENAME);
+        boolean delPhoto =  deletePhoto();
+        if (!delFile && !delPhoto){
             showMessage(getApplicationContext(),getResources().getString(R.string.nothing_save));
         }else{
             showMessage(getApplicationContext(),getResources().getString(R.string.clear_ok));
+            showPhoto();
         }
     }
 
