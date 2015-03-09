@@ -3,6 +3,8 @@ package kuzovkov.lab1;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -18,9 +20,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.NetworkInterface;
 
 import static kuzovkov.lab1.FileStorage.*;
 import static kuzovkov.lab1.Helper.*;
+import static kuzovkov.lab1.MyHttp.*;
 
 public class ResultActivity extends ActionBarActivity {
 
@@ -78,7 +82,8 @@ public class ResultActivity extends ActionBarActivity {
             fos.write(StringArray2String(this.data).getBytes());
             fos.close();
             showMessage(getApplicationContext(),getResources().getString(R.string.save_ok));
-        }catch(Exception e){
+            saveIntoServer();
+        }catch(IOException e){
             showMessage(getApplicationContext(),e.toString());
         }
     }
@@ -87,12 +92,49 @@ public class ResultActivity extends ActionBarActivity {
     public void clearData(View v){
         boolean delFile = deleteFile(FILENAME);
         boolean delPhoto =  deletePhoto();
+        deleteFromServer();
         if (!delFile && !delPhoto){
             showMessage(getApplicationContext(),getResources().getString(R.string.nothing_save));
         }else{
             showMessage(getApplicationContext(),getResources().getString(R.string.clear_ok));
             showPhoto();
         }
+    }
+
+    /*проверка сети*/
+    public boolean isNetworkOk(){
+        ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return ( networkInfo != null && networkInfo.isConnected() )? true: false;
+    }
+
+    /*отправка данных на сервер*/
+    public void saveIntoServer(){
+        if (isNetworkOk()){
+            String strData = StringArray2String(this.data);
+            String url = SERVER_URL;
+            String optype = "save";
+            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
+            File mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
+            String filename = (mediaFile.exists())? mediaFile.getPath() : "";
+            new MyHttp().execute(url, optype, StringArray2String(this.data), filename);
+        }else{
+            showMessage(getApplicationContext(), getResources().getString(R.string.network_fail));
+        }
+    }
+
+    /*удаление записи на сервере*/
+    public void deleteFromServer(){
+        if (isNetworkOk()){
+            String strData = StringArray2String(this.data);
+            String url = SERVER_URL;
+            String optype = "delete";
+            String filename = "";
+            new MyHttp().execute(url, optype, StringArray2String(this.data), filename);
+        }else{
+            showMessage(getApplicationContext(), getResources().getString(R.string.network_fail));
+        }
+
     }
 
     @Override

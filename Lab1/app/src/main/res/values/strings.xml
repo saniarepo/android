@@ -34,4 +34,8 @@
     <string name="fail_photo">Фото - ошибка</string>
     <string name="cancel_video">Видео - Отмена</string>
     <string name="fail_video">Видео - ошибка</string>
+    <string name="server_send_ok">Данные отправлены на сервер</string>
+    <string name="server_send_fail">Ошибка отправки данных на сервер</string>
+    <string name="network_fail">Сеть недоступна</string>
+
 </resources>

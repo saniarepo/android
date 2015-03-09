@@ -15,6 +15,7 @@ public class Helper {
 
     public static final String DATETIME_FORMAT = "hh:mm:ss dd/MM/yyyy";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String SERVER_URL = "http://192.168.0.100/android_lab1/api.php";
 
     /*паттерн для проверки email*/
     public static final Pattern emailPattern = Pattern.compile
@@ -38,7 +39,7 @@ public class Helper {
 
     /*вывод сообщения пользователю(тоста)*/
     public static void showMessage(Context context, String text){
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context,text,duration);
         toast.show();
     }
