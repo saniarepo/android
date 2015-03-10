@@ -37,12 +37,30 @@ public class ResultActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String[] data = intent.getStringArrayExtra(FormActivity.FORM_DATA);
         /*получение данных с интента и заполнение текстовых полей*/
+        if (data == null){
+            data = loadData();
+        }
+        if (data == null) return;
         ((TextView)findViewById(R.id.nameLastname)).setText(data[0]+" "+data[1]);
         ((TextView)findViewById(R.id.res_date_value)).setText(data[4]);
         ((TextView)findViewById(R.id.res_email_value)).setText(data[2]);
         ((TextView)findViewById(R.id.registered_value)).setText(data[5]);
         this.data = data;
         showPhoto();
+    }
+
+    /*чтение из файла сохраненных данных*/
+    public String[] loadData(){
+        /*чтение из файла*/
+        try{
+            byte[] buf = new byte[4096];
+            FileInputStream fis = openFileInput(FILENAME);
+            fis.read(buf);
+            String s = new String(buf);
+            return s.split(SEPARATOR);
+        }catch(Exception e){
+            return null;
+        }
     }
 
     /*показ фото если есть или аватарки */
@@ -101,6 +119,12 @@ public class ResultActivity extends ActionBarActivity {
         }
     }
 
+    /*обработчик кнопки ПОСМОТРЕТЬ ВСЕ, удаление файла с данными*/
+    public void viewAll(View v){
+        Intent intent = new Intent(this, ListWebActivity.class);
+        startActivity(intent);
+    }
+
     /*проверка сети*/
     public boolean isNetworkOk(){
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -112,12 +136,12 @@ public class ResultActivity extends ActionBarActivity {
     public void saveIntoServer(){
         if (isNetworkOk()){
             String strData = StringArray2String(this.data);
-            String url = SERVER_URL;
+            String url = SERVER_API;
             String optype = "save";
             File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
             File mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
             String filename = (mediaFile.exists())? mediaFile.getPath() : "";
-            new MyHttp().execute(url, optype, StringArray2String(this.data), filename);
+            new netTask().execute("post", url, optype, StringArray2String(this.data), filename);
         }else{
             showMessage(getApplicationContext(), getResources().getString(R.string.network_fail));
         }
@@ -127,10 +151,10 @@ public class ResultActivity extends ActionBarActivity {
     public void deleteFromServer(){
         if (isNetworkOk()){
             String strData = StringArray2String(this.data);
-            String url = SERVER_URL;
+            String url = SERVER_API;
             String optype = "delete";
             String filename = "";
-            new MyHttp().execute(url, optype, StringArray2String(this.data), filename);
+            new netTask().execute("post", url, optype, StringArray2String(this.data), filename);
         }else{
             showMessage(getApplicationContext(), getResources().getString(R.string.network_fail));
         }
@@ -157,5 +181,16 @@ public class ResultActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private class netTask extends  MyHttp{
+        @Override
+        protected void onPostExecute(String result){
+            if(result != null )
+                showMessage(getApplicationContext(), result);
+        }
+
+
     }
 }

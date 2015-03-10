@@ -20,14 +20,21 @@ public class MyHttp extends AsyncTask<String,Void,String>{
     @Override
     protected String doInBackground(String... params){
         try{
-            Map<String, String> data = new Hashtable<String,String>();
-            data.put("optype",params[1]);
-            data.put("data", params[2]);
-            Map<String, String> files = new Hashtable<String,String>();
-            if (!params[3].equals("")) {
-                files.put("photo",params[3]);
+            if (params[0].equals("post")){
+                Map<String, String> data = new Hashtable<String,String>();
+                data.put("optype",params[2]);
+                data.put("data", params[3]);
+                Map<String, String> files = new Hashtable<String,String>();
+                if (!params[4].equals("")) {
+                    files.put("photo",params[4]);
+                }
+                return multiPartPostRequest(params[1], data, files);
+            }else if(params[0].equals("get")){
+                return sendGetRequest(params[1]);
+            }else{
+                return "Wrong request method!";
             }
-            return multiPartPostRequest(params[0], data, files);
+
         }catch(Exception e){
             return "Unable to retrieve web page. Url may be invalid";
         }

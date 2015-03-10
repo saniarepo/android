@@ -125,4 +125,13 @@
             android:id="@+id/btn_save" />
 
     </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_all"
+        android:id="@+id/view_all"
+        android:onClick="viewAll"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

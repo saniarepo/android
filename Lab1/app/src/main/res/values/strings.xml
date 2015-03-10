@@ -37,5 +37,7 @@
     <string name="server_send_ok">Данные отправлены на сервер</string>
     <string name="server_send_fail">Ошибка отправки данных на сервер</string>
     <string name="network_fail">Сеть недоступна</string>
-
+    <string name="view_all">Посмотреть все</string>
+    <string name="title_activity_list_web">Список</string>
+    <string name="load">Загрузка...</string>
 </resources>
