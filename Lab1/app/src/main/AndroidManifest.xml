@@ -43,6 +43,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kuzovkov.lab1.ResultActivity" />
         </activity>
+        <activity
+            android:name=".ExcRateActivity"
+            android:label="@string/title_activity_exc_rate"
+            android:parentActivityName=".ResultActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kuzovkov.lab1.ResultActivity" />
+        </activity>
     </application>
 
 </manifest>

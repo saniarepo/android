@@ -25,6 +25,7 @@ import java.net.NetworkInterface;
 import static kuzovkov.lab1.FileStorage.*;
 import static kuzovkov.lab1.Helper.*;
 import static kuzovkov.lab1.MyHttp.*;
+import static kuzovkov.lab1.Const.*;
 
 public class ResultActivity extends ActionBarActivity {
 
@@ -120,8 +121,14 @@ public class ResultActivity extends ActionBarActivity {
     }
 
     /*обработчик кнопки ПОСМОТРЕТЬ ВСЕ, удаление файла с данными*/
-    public void viewAll(View v){
+    public void viewOnSite(View v){
         Intent intent = new Intent(this, ListWebActivity.class);
+        startActivity(intent);
+    }
+
+    /*обработчик кнопки КУРС ВАЛЮТЫ*/
+    public void excRate(View v){
+        Intent intent = new Intent(this, ExcRateActivity.class);
         startActivity(intent);
     }
 
@@ -136,7 +143,7 @@ public class ResultActivity extends ActionBarActivity {
     public void saveIntoServer(){
         if (isNetworkOk()){
             String strData = StringArray2String(this.data);
-            String url = SERVER_API;
+            String url = SERVER_API2;
             String optype = "save";
             File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_IMAGE_FOLDER);
             File mediaFile = new File(mediaStorageDir.getPath() + File.separator + PHOTO_FILENAME);
@@ -151,7 +158,7 @@ public class ResultActivity extends ActionBarActivity {
     public void deleteFromServer(){
         if (isNetworkOk()){
             String strData = StringArray2String(this.data);
-            String url = SERVER_API;
+            String url = SERVER_API2;
             String optype = "delete";
             String filename = "";
             new netTask().execute("post", url, optype, StringArray2String(this.data), filename);
@@ -190,7 +197,7 @@ public class ResultActivity extends ActionBarActivity {
             if(result != null )
                 showMessage(getApplicationContext(), result);
         }
-
-
     }
+
+
 }

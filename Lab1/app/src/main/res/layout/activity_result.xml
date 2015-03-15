@@ -129,9 +129,17 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/view_all"
-        android:id="@+id/view_all"
-        android:onClick="viewAll"
+        android:text="@string/view_on_site"
+        android:id="@+id/view_on_site"
+        android:onClick="viewOnSite"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/exc_rate"
+        android:id="@+id/exc_rate"
+        android:onClick="excRate"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

@@ -6,16 +6,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import static kuzovkov.lab1.Const.*;
 
 /**
  * Created by sania on 2/26/2015.
  */
 public class FileStorage {
-
-    public static final String FILENAME = "data.dat";
-    public static final String SEPARATOR = ";";
-    public final static String PHOTO_FILENAME = "anketa.jpg";
-    public final static String APP_IMAGE_FOLDER = "Анкета";
 
     public static void saveStrToFile(String str)throws FileNotFoundException, IOException {
         FileOutputStream fos = new FileOutputStream(FILENAME);

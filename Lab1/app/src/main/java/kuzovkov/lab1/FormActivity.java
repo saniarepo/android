@@ -22,7 +22,7 @@ import java.util.Date;
 
 import static kuzovkov.lab1.FileStorage.*;
 import static kuzovkov.lab1.Helper.*;
-
+import static kuzovkov.lab1.Const.*;
 
 public class FormActivity extends ActionBarActivity {
 

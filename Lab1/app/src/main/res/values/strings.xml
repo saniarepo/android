@@ -37,7 +37,10 @@
     <string name="server_send_ok">Данные отправлены на сервер</string>
     <string name="server_send_fail">Ошибка отправки данных на сервер</string>
     <string name="network_fail">Сеть недоступна</string>
-    <string name="view_all">Посмотреть все</string>
+    <string name="view_on_site">Посмотреть на сайте</string>
     <string name="title_activity_list_web">Список</string>
-    <string name="load">Загрузка...</string>
+    <string name="load">Load...</string>
+    <string name="exc_rate">Курс валюты</string>
+    <string name="title_activity_exc_rate">Курс валюты</string>
+
 </resources>

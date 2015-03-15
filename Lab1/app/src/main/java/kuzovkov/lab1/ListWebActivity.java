@@ -12,6 +12,7 @@ import java.net.URL;
 
 import static kuzovkov.lab1.MyHttp.*;
 import static kuzovkov.lab1.Helper.*;
+import static kuzovkov.lab1.Const.*;
 
 public class ListWebActivity extends ActionBarActivity {
 
