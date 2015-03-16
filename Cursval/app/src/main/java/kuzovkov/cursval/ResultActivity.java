@@ -1,14 +1,20 @@
 package kuzovkov.cursval;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.List;
 
-public class ResultActivity extends ActionBarActivity {
+
+public class ResultActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,14 +22,39 @@ public class ResultActivity extends ActionBarActivity {
         setContentView(R.layout.activity_result);
         Intent intent = getIntent();
         String xmlContent = intent.getStringExtra(StartActivity.CURSES_XML_DATA);
-        this.setTitle(getResources().getString(R.string.dinamic_curs));
+
         ((TextView)findViewById(R.id.valutaName)).setText(intent.getStringExtra(StartActivity.SELECTED_VALUTE));
-        showData(xmlContent);
+        fillViewList(xmlContent);
     }
 
-    public void showData(String xmlContent){
-        ((TextView)findViewById(R.id.result)).setText(xmlContent);
-        
+    /*преобразование строки с XML данными в массив строк, пригодный для вывода(парсинг)*/
+    private String[] xml2stringArray(String xmlContent){
+        String[] listData = null;
+        try{
+            List<CBR_ParserXML.Curs> curses = CBR_ParserXML.parseCurses(xmlContent);
+            listData = new String[curses.size()];
+            int row = 0;
+            for (CBR_ParserXML.Curs curs: curses){
+                listData[row] = "Дата: " + curs.getDate() + "\n" + "Курс: " + curs.getCurs()/curs.getNominal() + " рублей\n" + "Код валюты: " + curs.getValuta();
+                row++;
+            }
+
+        }catch(Exception e){
+            listData = new String[1];
+            listData[0] = getResources().getString(R.string.parse_error);
+
+        }
+        return listData;
+    }
+
+    public void onListItemClick(ListView parent, View v, int position, long id){
+
+    }
+
+    /*заполнение списка данными из XML строки*/
+    private void fillViewList(String xmlContent){
+        String[] listCurses = xml2stringArray(xmlContent);
+        setListAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, listCurses));
     }
 
 

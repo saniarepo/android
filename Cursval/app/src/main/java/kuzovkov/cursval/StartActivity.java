@@ -102,9 +102,11 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
                 Helper.showMessage(getApplicationContext(), getResources().getString(R.string.load_valutes_fail));
                 appEnd();
             }
+            ((TextView)findViewById(R.id.text)).setText(getResources().getString(R.string.select_valutes));
             try{
                 valutesMap = CBR_ParserXML.parseValutes(xmlContent);
                 fillSpinner(valutesMap);
+
             }catch(Exception e){
                 Helper.showMessage(getApplicationContext(), e.toString());
             }
@@ -178,8 +180,17 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
     public void getCurses(View v){
         String dateBegin = ((TextView)findViewById(R.id.dateBegin)).getText().toString();
         String dateEnd = ((TextView)findViewById(R.id.dateEnd)).getText().toString();
-        String url = CBR_ParserXML.url +"date_req1=" + dateBegin + "&date_req2=" + dateEnd + "&VAL_NM_RQ=" + codeValute;
+        if (!Helper.checkDateInterval(dateBegin, dateEnd)){
+            Helper.showMessage(getApplicationContext(),getResources().getString(R.string.dates_error));
+            return;
+        }
+        String url = CBR_ParserXML.url +"date_req1=" + Helper.convDate(dateBegin) + "&date_req2=" + Helper.convDate(dateEnd) + "&VAL_NM_RQ=" + codeValute;
+
         Log.d("url:",url);
-        new getCurses().execute("get",url,SERVICE_ENCODE);
+        if (isNetworkOk()){
+            new getCurses().execute("get",url,SERVICE_ENCODE);
+        }else{
+            Helper.showMessage(getApplicationContext(),getResources().getString(R.string.network_not_avail));
+        }
     }
 }

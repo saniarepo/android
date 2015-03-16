@@ -76,4 +76,32 @@ public class Helper {
         return format2.format(date);
     }
 
+    public static Date makeDate(String datestr){
+        String[] parths = datestr.split("\\.");
+        if (parths.length < 3){
+            parths = datestr.split("/");
+        }
+        int day = Integer.parseInt(parths[0]);
+        int month = Integer.parseInt(parths[1]);
+        int year = Integer.parseInt(parths[2]);
+        Calendar c = new GregorianCalendar(year,month-1,day);
+        Date date = c.getTime();
+        return date;
+    }
+
+    public static boolean checkDateInterval(String date1, String date2){
+        if (!checkValid(date1, datePattern) || !checkValid(date2, datePattern)) return false;
+        try{
+            Date d1 = makeDate(date1);
+            Date d2 = makeDate(date2);
+            Date now = new Date();
+            if ( now.getTime() < d2.getTime()) return false;
+            if ( d1.getTime() > d2.getTime()) return false;
+
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -17,4 +17,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="dinamic_curs">Динамика курса </string>
     <string name="valuta_name">Имя валюты</string>
+    <string name="parse_error">Ошибка обработки полученных данных</string>
+    <string name="dates_error">Некорректно введены даты</string>
 </resources>
