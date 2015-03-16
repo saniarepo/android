@@ -31,6 +31,25 @@ public class Helper {
         String time = format1.format(date);
         return time;
     }
+
+    /*получение строки с текущей датой*/
+    public static String getCurrDate(){
+        Date date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT);
+        String dateStr = format1.format(date);
+        return dateStr;
+    }
+
+    /*получение строки с датой отстоящей от текущей на заданное количество дней*/
+    public static String getDate(int day){
+        Long time = new Date().getTime();
+        time += day * 1000 * 3600 * 24;
+        Date date = new Date(time);
+        SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT);
+        String dateStr = format1.format(date);
+        return dateStr;
+    }
+
     /*вывод сообщения пользователю(тоста)*/
     public static void showMessage(Context context, String text){
         int duration = Toast.LENGTH_LONG;

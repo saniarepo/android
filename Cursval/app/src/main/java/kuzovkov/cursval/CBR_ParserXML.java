@@ -19,6 +19,7 @@ public class CBR_ParserXML {
     public static String urlValutes1 = "http://www.cbr.ru/scripts/XML_val.asp?d=0";
     public static String urlValutes2 = "http://www.cbr.ru/scripts/XML_val.asp?d=1";
     public static Map valutes = null;
+    public static String code = "R01235";
 
     public static class Curs{
         String valuta;

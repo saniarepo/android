@@ -2,7 +2,19 @@
 <resources>
 
     <string name="app_name">Курсы валют</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="select_valutes">Выберите валюту</string>
     <string name="action_settings">Настройки</string>
     <string name="valute_no_select">Валюта не выбрана</string>
+    <string name="network_not_avail">Сеть не доступна</string>
+    <string name="valutes_download">Загрузка списка валют...</string>
+    <string name="select_dates">Выберите интервал дат:</string>
+    <string name="begin_date">Начало:</string>
+    <string name="end_date">Конец:</string>
+    <string name="load_valutes_fail">Не удалось загрузитьсписок валют</string>
+    <string name="get">Получить</string>
+    <string name="load_сurses_fail">Не удалось получить курсы валют</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="dinamic_curs">Динамика курса </string>
+    <string name="valuta_name">Имя валюты</string>
 </resources>

@@ -45,6 +45,9 @@ public class HttpReq extends AsyncTask<String, Void, String>{
             URL currUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection)currUrl.openConnection();
             connection.setDoOutput(true);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(10000);
+
             connection.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String resivedString;
