@@ -3,6 +3,7 @@ package kuzovkov.cursval;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Dialog;
 import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,7 +31,7 @@ import java.util.Map;
 import static kuzovkov.cursval.Consts.*;
 
 
-public class StartActivity extends ActionBarActivity implements AdapterView.OnItemSelectedListener {
+public class StartActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener, NoticeDialogFragment.NoticeDialogListener{
 
     public static Map<String,String> valutesMap = null; /*отображение задающее соответствие кодов и названий валют*/
     public String[] valutes = null; /*массив названий валют*/
@@ -40,6 +42,7 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        ((Button)findViewById(R.id.button)).setEnabled(false);
         getValuteCodes();
         fillDates();
 
@@ -69,10 +72,11 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
 
     /*получение списка валют*/
     private void getValuteCodes(){
+        ((Button)findViewById(R.id.button)).setEnabled(false);
         if (isNetworkOk()){
             String url1 = CBR_ParserXML.urlValutes1;
             ((TextView)findViewById(R.id.text)).setText(getResources().getString(R.string.valutes_download));
-            new getValutes().execute("get", url1, SERVICE_ENCODE);
+            new getValutes().execute("get", url1, "windows-1251");
         }else{
             Helper.showMessage(getApplicationContext(),getResources().getString(R.string.network_not_avail));
         }
@@ -104,7 +108,7 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         protected void onPostExecute(String xmlContent){
 
             if ( xmlContent == null ){
-                Helper.showMessage(getApplicationContext(), getResources().getString(R.string.load_valutes_fail));
+                alertFailValutes();
                 return;
             }
             saveItem("VALUTES_XML_CONTENT", xmlContent);
@@ -142,27 +146,6 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         startActivity(intent);
     }
 
-    public void msgBox(String msg, String btnPos, String btnNeg){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-        builder.setTitle(getResources().getString(R.string.app_name));
-        builder.setMessage(msg);
-        builder.setPositiveButton(btnPos, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id){
-
-
-            }
-        });
-
-        builder.setNegativeButton(btnNeg, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id){
-
-
-            }
-        });
-        builder.setCancelable(false);
-        AlertDialog alert = builder.create();
-    }
-
     /*заполнение спинера списком валют*/
     public void fillSpinner(Map<String,String> valutesMap){
         valutes = new String[valutesMap.size()];
@@ -175,7 +158,7 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valutes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
-
+        ((Button)findViewById(R.id.button)).setEnabled(true);
     }
 
     /*заполнение полей дат*/
@@ -193,10 +176,6 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         return ( networkInfo != null && networkInfo.isConnected() )? true: false;
     }
 
-    /*завершение работы*/
-    public void appEnd(){
-        StartActivity.this.finish();
-    }
 
     /*обработчик кнопки ПОЛУЧИТЬ*/
     public void getCurses(View v){
@@ -231,8 +210,8 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
     /*чтение строки из файла сименем key*/
     public String loadItem(String key){
         try{
-            byte[] buf = new byte[4096];
             FileInputStream fis = openFileInput(key);
+            byte[] buf = new byte[fis.available()];
             fis.read(buf);
             String s = new String(buf);
             return s;
@@ -244,5 +223,25 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
     /*удаление файла с именем key*/
     public boolean clearItem(String key){
         return deleteFile(key);
+    }
+
+
+
+    /*показ диалога в случае неудачной загрузки списка валют*/
+    public void alertFailValutes(){
+        android.app.DialogFragment dialog = new NoticeDialogFragment();
+        dialog.show(getFragmentManager(), "NoticeDialogFragment");
+    }
+
+    /*повторная попытка получить валюты*/
+    @Override
+    public void onDialogPositiveClick(android.app.DialogFragment dialog){
+        getValuteCodes();
+    }
+
+    /*закрытие приложения*/
+    @Override
+    public void onDialogNegativeClick(android.app.DialogFragment dialog){
+        this.finish();
     }
 }

@@ -85,11 +85,13 @@ public class ResultActivity extends ListActivity {
         if (id == R.id.as_table) {
             Intent intent = new Intent(this, TableResultActivity.class);
             startActivity(intent);
+            this.finish();
             return true;
         }else if(id == R.id.as_diagram){
             //Helper.showMessage(getApplicationContext(),"diagram");
             Intent intent = new Intent(this, GraphResultActivity.class);
             startActivity(intent);
+            this.finish();
             return true;
         }
 
@@ -100,8 +102,8 @@ public class ResultActivity extends ListActivity {
     /*чтение строки из файла сименем key*/
     public String loadItem(String key){
         try{
-            byte[] buf = new byte[4096];
             FileInputStream fis = openFileInput(key);
+            byte[] buf = new byte[fis.available()];
             fis.read(buf);
             String s = new String(buf);
             return s;

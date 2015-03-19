@@ -40,10 +40,13 @@ public class GraphResultActivity extends ActionBarActivity {
         if (id == R.id.as_table) {
             Intent intent = new Intent(this, TableResultActivity.class);
             startActivity(intent);
+            this.finish();
             return true;
         }else if (id == R.id.as_list){
             Intent intent = new Intent(this, ResultActivity.class);
             startActivity(intent);
+            this.finish();
+            return true;
         }
         return true;
         //return super.onOptionsItemSelected(item);
@@ -52,8 +55,8 @@ public class GraphResultActivity extends ActionBarActivity {
     /*чтение строки из файла сименем key*/
     public String loadItem(String key){
         try{
-            byte[] buf = new byte[4096];
             FileInputStream fis = openFileInput(key);
+            byte[] buf = new byte[fis.available()];
             fis.read(buf);
             String s = new String(buf);
             return s;

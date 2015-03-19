@@ -43,10 +43,12 @@ public class TableResultActivity extends ActionBarActivity {
         if (id == R.id.as_diagram) {
             Intent intent = new Intent(this, GraphResultActivity.class);
             startActivity(intent);
+            this.finish();
             return true;
         }else if (id == R.id.as_list){
             Intent intent = new Intent(this, ResultActivity.class);
             startActivity(intent);
+            this.finish();
             return true;
         }
         return true;
@@ -59,11 +61,12 @@ public class TableResultActivity extends ActionBarActivity {
 
             List<CBR_ParserXML.Curs> curses = CBR_ParserXML.parseCurses(xmlContent);
             StringBuffer content = new StringBuffer();
-            content.append("<html><body>");
-            //content.append(getResources().getString(R.string.table_style));
+            content.append("<html>");
+            content.append("<style>table,td,tr,th{border: 1px solid black;} th{background-color:#ff0;} td,th{padding:5px;}</style>");
+            content.append("<body>");
             content.append("<h1>").append(title).append("</h1>");
             content.append("<table>");
-            content.append(getResources().getString(R.string.table_header));
+            content.append("<tr><th>Дата</th><th>Курс(руб)</th><th>Код</th></tr>");
             for( CBR_ParserXML.Curs curs: curses ){
                 content.append("<tr>");
                 content.append("<td>").append(curs.getDate()).append("</td>");
@@ -75,7 +78,7 @@ public class TableResultActivity extends ActionBarActivity {
             Log.d("HTML: ", content.toString());
              ((WebView)findViewById(R.id.webView)).loadDataWithBaseURL(null,content.toString(), "text/html", "UTF-8",null);
 
-            //((TextView)findViewById(R.id.textView)).setText(xmlContent);
+
 
 
         }catch(Exception e){
@@ -88,8 +91,8 @@ public class TableResultActivity extends ActionBarActivity {
     /*чтение строки из файла сименем key*/
     public String loadItem(String key){
         try{
-            byte[] buf = new byte[4096];
             FileInputStream fis = openFileInput(key);
+            byte[] buf = new byte[fis.available()];
             fis.read(buf);
             String s = new String(buf);
             return s;

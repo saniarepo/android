@@ -1,6 +1,7 @@
 package kuzovkov.cursval;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.net.*;
 import java.io.*;
@@ -44,19 +45,16 @@ public class HttpReq extends AsyncTask<String, Void, String>{
         try{
             URL currUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection)currUrl.openConnection();
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(15000);
-
             connection.setRequestMethod("GET");
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String resivedString;
-            StringBuffer sb = new StringBuffer();
-            while ((resivedString = in.readLine()) != null) {
-                sb.append(resivedString);
-            }
-            in.close();
-            return sb.toString();
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(10000);
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(is, "UTF-8");
+            char[] buffer = new char[is.available()];
+            reader.read(buffer);
+            return new String(buffer);
         }
         catch(Exception e){
             return null;
@@ -68,21 +66,25 @@ public class HttpReq extends AsyncTask<String, Void, String>{
             try{
                 URL currUrl = new URL(url);
                 HttpURLConnection connection = (HttpURLConnection)currUrl.openConnection();
-                connection.setDoOutput(true);
                 connection.setRequestMethod("GET");
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), encode));
-                String resivedString;
-                StringBuffer sb = new StringBuffer();
-                while ((resivedString = in.readLine()) != null) {
-                    sb.append(resivedString);
-                }
-                in.close();
-                return sb.toString();
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(10000);
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream is = connection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(is, encode);
+                char[] buffer = new char[is.available()];
+                reader.read(buffer);
+                return new String(buffer);
             }
             catch(Exception e){
                 return null;
             }
+
         }
+
+
+
     /*send POST request and resive response*/
     public static String urlencodedPostRequest(String url, Map<String,String> data){
         try{
@@ -148,7 +150,7 @@ public class HttpReq extends AsyncTask<String, Void, String>{
                 b = new byte[c];
                 fis.read(b);
                 fis.close();
-// out.write(("--"+boundary+"\n").getBytes());
+
                 out.write(("Content-Disposition: form-data; name=\""+field+"\"; filename=\""+f.getName() +"\"\n").getBytes());
                 out.write(("Content-Type: application/octet-stream\n").getBytes());
                 out.write(("Content-Transfer-Encoding: binary\n\n").getBytes());
@@ -175,6 +177,42 @@ public class HttpReq extends AsyncTask<String, Void, String>{
             return null;
         }
     }
+
+        public String downloadUrl(String myurl, String encode) throws IOException {
+            InputStream is = null;
+
+
+            try {
+                URL url = new URL(myurl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                    // Starts the query
+                conn.connect();
+                int response = conn.getResponseCode();
+                is = conn.getInputStream();
+                // Convert the InputStream into a string
+                String contentAsString = readIt(is, encode);
+                return contentAsString;
+                // Makes sure that the InputStream is closed after the app is
+                // finished using it.
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
+        }
+
+        /*Преобразование потока в строку*/
+        public String readIt(InputStream stream, String encode) throws IOException, UnsupportedEncodingException {
+            Reader reader = null;
+            reader = new InputStreamReader(stream, encode);
+            char[] buffer = new char[stream.available()];
+            reader.read(buffer);
+            return new String(buffer);
+        }
 }
 
 
