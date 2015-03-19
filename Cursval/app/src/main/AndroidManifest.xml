@@ -28,6 +28,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kuzovkov.cursval.StartActivity" />
         </activity>
+        <activity
+            android:name=".GraphResultActivity"
+            android:label="@string/title_activity_graph_result"
+            android:parentActivityName=".ResultActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kuzovkov.cursval.ResultActivity" />
+        </activity>
+        <activity
+            android:name=".TableResultActivity"
+            android:label="@string/title_activity_table_result"
+            android:parentActivityName=".ResultActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kuzovkov.cursval.ResultActivity" />
+        </activity>
     </application>
 
 </manifest>

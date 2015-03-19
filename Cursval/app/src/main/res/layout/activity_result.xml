@@ -14,11 +14,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/valuta_name"
+        android:background="@color/grey1"
+        android:padding="10dp"
         android:id="@+id/valutaName" />
 
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="@color/grey3"
+        android:padding="5dp"
         android:id="@android:id/list" />
 
 

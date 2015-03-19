@@ -14,6 +14,8 @@ import java.util.regex.*;
 public class Helper {
     public static final String DATETIME_FORMAT = "hh:mm:ss dd/MM/yyyy";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String SEPARATOR = ";";
+
 
     /*паттерн для проверки email*/
     public static final Pattern emailPattern = Pattern.compile
@@ -102,6 +104,22 @@ public class Helper {
             return false;
         }
         return true;
+    }
+
+    /*преобразование массива строк в строку*/
+    public static String StringArray2String(String[] arr){
+        StringBuffer sb = new StringBuffer();
+        for ( int i = 0; i < arr.length; i++ ){
+            sb.append(arr[i]);
+            if ( i < arr.length -1 ) sb.append(SEPARATOR);
+        }
+        return sb.toString();
+    }
+    /*преобразование строки в массив строк*/
+    public static String[] String2StringArray(String str){
+        String separator = SEPARATOR;
+        String[] arr = str.split(separator);
+        return arr;
     }
 
 }

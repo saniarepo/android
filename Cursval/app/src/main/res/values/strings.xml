@@ -19,4 +19,16 @@
     <string name="valuta_name">Имя валюты</string>
     <string name="parse_error">Ошибка обработки полученных данных</string>
     <string name="dates_error">Некорректно введены даты</string>
+    <string name="repeat">Повторить попытку?</string>
+    <string name="close_app">Закрыть приложение</string>
+    <string name="data_not_exists">Нет данных</string>
+    <string name="as_list">Списком</string>
+    <string name="as_diagram">Диаграмма</string>
+    <string name="as_table">Таблицей</string>
+    <string name="title_activity_graph_result">Диаграмма</string>
+    <string name="title_activity_table_result">Таблица</string>
+    <string name="table_header"><tr><th>Дата</th><th>Курс(руб)</th><th>Код</th></tr></string>
+    <string name="table_style"><style>table,td,tr,th{border: 1px solid black;} th{background-color:#ff0;}</style></string>
+
+
 </resources>

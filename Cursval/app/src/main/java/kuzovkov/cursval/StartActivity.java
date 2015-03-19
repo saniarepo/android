@@ -1,11 +1,15 @@
 package kuzovkov.cursval;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,20 +22,19 @@ import android.widget.ExpandableListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Map;
+import static kuzovkov.cursval.Consts.*;
 
 
 public class StartActivity extends ActionBarActivity implements AdapterView.OnItemSelectedListener {
 
     public static Map<String,String> valutesMap = null; /*отображение задающее соответствие кодов и названий валют*/
     public String[] valutes = null; /*массив названий валют*/
-    public static String codeValute = "R01235"; /*выбор валюты по умолчанию*/
-    public static String nameValute = "Доллар США";
-    public static final String CURSES_XML_DATA = "kyzovkov.cursval.CURSES_XML_DATA";
-    public static final String SELECTED_VALUTE = "kyzovkov.cursval.SELECTED_VALUTE";
-    public static final String SERVICE_ENCODE = "windows-1251";
-
-    public ActionBarActivity instance = this;
+    public static String codeValute;
+    public static String nameValute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_start);
         getValuteCodes();
         fillDates();
+
     }
 
 
@@ -60,7 +64,6 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,52 +87,51 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
                 nameValute = valutesMap.get(code);
             }
         }
+        saveItem("CODE_VALUTE", codeValute);
+        saveItem("NAME_VALUTE", nameValute);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        codeValute = "R01235";
+        codeValute = codeValuteDefault;
+        nameValute = nameValuteDefault;
     }
 
     /*вложенный класс для получения списка валют с сайта центробанка*/
     private class getValutes extends HttpReq{
 
         @Override
-        protected void onPostExecute(String result){
-            String xmlContent = result;
-            FileStorage.setItem(instance, "ValutesXmlContent", xmlContent);
-            if ( result == null ){
+        protected void onPostExecute(String xmlContent){
+
+            if ( xmlContent == null ){
                 Helper.showMessage(getApplicationContext(), getResources().getString(R.string.load_valutes_fail));
-                appEnd();
+                return;
             }
+            saveItem("VALUTES_XML_CONTENT", xmlContent);
             ((TextView)findViewById(R.id.text)).setText(getResources().getString(R.string.select_valutes));
             try{
                 valutesMap = CBR_ParserXML.parseValutes(xmlContent);
                 fillSpinner(valutesMap);
 
             }catch(Exception e){
-                Helper.showMessage(getApplicationContext(), e.toString());
+                Helper.showMessage(getApplicationContext(), getResources().getString(R.string.parse_error));
             }
         }
-
     }
 
     /*вложенный класс для получения динамики курса валюты с сайта центробанка*/
     private class getCurses extends HttpReq{
 
         @Override
-        protected void onPostExecute(String result){
-
-            if ( result == null ){
+        protected void onPostExecute(String xmlContent){
+            if ( xmlContent == null ){
                 Helper.showMessage(getApplicationContext(), getResources().getString(R.string.load_сurses_fail));
-                appEnd();
 
             }else{
-                showResult(result);
+                saveItem("CURSES_XML_CONTENT", xmlContent);
+                showResult(xmlContent);
             }
-
         }
-
     }
 
     /*старт активности где отображается результат с передачей ей результата*/
@@ -138,6 +140,27 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         intent.putExtra(CURSES_XML_DATA, xmlContent);
         intent.putExtra(SELECTED_VALUTE, nameValute);
         startActivity(intent);
+    }
+
+    public void msgBox(String msg, String btnPos, String btnNeg){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        builder.setTitle(getResources().getString(R.string.app_name));
+        builder.setMessage(msg);
+        builder.setPositiveButton(btnPos, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id){
+
+
+            }
+        });
+
+        builder.setNegativeButton(btnNeg, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id){
+
+
+            }
+        });
+        builder.setCancelable(false);
+        AlertDialog alert = builder.create();
     }
 
     /*заполнение спинера списком валют*/
@@ -172,8 +195,7 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
 
     /*завершение работы*/
     public void appEnd(){
-        this.finish();
-
+        StartActivity.this.finish();
     }
 
     /*обработчик кнопки ПОЛУЧИТЬ*/
@@ -192,5 +214,35 @@ public class StartActivity extends ActionBarActivity implements AdapterView.OnIt
         }else{
             Helper.showMessage(getApplicationContext(),getResources().getString(R.string.network_not_avail));
         }
+    }
+
+    /*запись строки в файл с именем key*/
+    public boolean saveItem(String key, String value){
+        try{
+            FileOutputStream fos = openFileOutput(key, Context.MODE_PRIVATE);
+            fos.write(value.getBytes());
+            fos.close();
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    /*чтение строки из файла сименем key*/
+    public String loadItem(String key){
+        try{
+            byte[] buf = new byte[4096];
+            FileInputStream fis = openFileInput(key);
+            fis.read(buf);
+            String s = new String(buf);
+            return s;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    /*удаление файла с именем key*/
+    public boolean clearItem(String key){
+        return deleteFile(key);
     }
 }
