@@ -71,7 +71,8 @@ public class DrawCanvasView extends View {
             x1 = MARGIN;
             y1 = MARGIN + PADDING + deltaY * count;
             y2 = y1;
-            x2 = curs.getCurs()/curs.getNominal()/maxCurs*(WIDTH - MARGIN - PADDING);
+            float currCurs = curs.getCurs()/curs.getNominal();
+            x2 = MARGIN+PADDING+(currCurs-minCurs)/(maxCurs-minCurs)*(WIDTH - MARGIN - PADDING);
             count++;
             p.setColor(Color.RED);
             canvas.drawLine(x1, y1, x2, y2, p);
@@ -95,12 +96,13 @@ public class DrawCanvasView extends View {
         canvas.drawLine(x1,y1,x2,y2,p);
         p.setColor(Color.BLUE);
         p.setTextSize(20.0f);
-        canvas.drawText(getResources().getString(R.string.curses), WIDTH, MARGIN/2 ,p);
+        canvas.drawText(getResources().getString(R.string.curses), WIDTH-40, MARGIN/2 ,p);
         canvas.drawText(getResources().getString(R.string.dates), MARGIN+10, HEIGHT ,p);
         /*уровни*/
         p.setColor(Color.GRAY);
-        canvas.drawLine(MARGIN+PADDING, MARGIN-5, MARGIN+PADDING, HEIGHT,p);
-        canvas.drawLine(WIDTH, MARGIN-5, WIDTH, HEIGHT,p);
+        p.setAlpha(100);
+        canvas.drawLine(MARGIN+PADDING, MARGIN-5, MARGIN+PADDING, HEIGHT, p);
+        canvas.drawLine(WIDTH, MARGIN-5, WIDTH, HEIGHT, p);
         p.setColor(Color.BLACK);
         p.setTextSize(15.0f);
         canvas.drawText(new Float(minCurs).toString(), MARGIN+PADDING-10, MARGIN-10, p);
