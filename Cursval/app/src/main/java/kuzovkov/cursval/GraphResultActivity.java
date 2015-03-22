@@ -1,23 +1,46 @@
 package kuzovkov.cursval;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.PathShape;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
+import java.util.List;
 
 
 public class GraphResultActivity extends ActionBarActivity {
 
+    private DrawCanvasView mView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_graph_result);
+        mView = new DrawCanvasView(this);
+        setContentView(mView);
         String xmlContent = loadItem("CURSES_XML_CONTENT");
-        ((TextView)findViewById(R.id.graph)).setText(xmlContent);
+        String valuteName = loadItem("NAME_VALUTE");
+        //((TextView)findViewById(R.id.graph)).setText(xmlContent);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        try{
+            List<CBR_ParserXML.Curs> curses = CBR_ParserXML.parseCurses(xmlContent);
+            mView.drawDiagram(valuteName, curses);
+        }catch(Exception e){
+            Helper.showMessage(getApplicationContext(), getResources().getString(R.string.parse_error));
+            return;
+        }
+
+
 
     }
 
@@ -51,6 +74,7 @@ public class GraphResultActivity extends ActionBarActivity {
         return true;
         //return super.onOptionsItemSelected(item);
     }
+
 
     /*чтение строки из файла сименем key*/
     public String loadItem(String key){

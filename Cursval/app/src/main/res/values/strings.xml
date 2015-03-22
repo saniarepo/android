@@ -28,7 +28,7 @@
     <string name="title_activity_graph_result">Диаграмма</string>
     <string name="title_activity_table_result">Таблица</string>
     <string name="ok">Ok</string>
-
-
+    <string name="dates">Даты</string>
+    <string name="curses">Курсы</string>
 
 </resources>
