@@ -95,8 +95,8 @@ public class ResultActivity extends ListActivity {
             return true;
         }
 
-        return true;
-        //return super.onOptionsItemSelected(item);
+
+        return super.onOptionsItemSelected(item);
     }
 
     /*чтение строки из файла сименем key*/

@@ -31,7 +31,7 @@
         <activity
             android:name=".GraphResultActivity"
             android:label="@string/title_activity_graph_result"
-            android:parentActivityName=".ResultActivity" >
+            android:parentActivityName=".StartActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kuzovkov.cursval.ResultActivity" />
@@ -39,7 +39,7 @@
         <activity
             android:name=".TableResultActivity"
             android:label="@string/title_activity_table_result"
-            android:parentActivityName=".ResultActivity" >
+            android:parentActivityName=".StartActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kuzovkov.cursval.ResultActivity" />
